@@ -1,0 +1,26 @@
+FROM grafana/grafana:latest
+
+USER root
+
+# Copy provisioning files
+COPY grafana/provisioning /etc/grafana/provisioning
+
+# Create separate script file
+RUN echo '#!/bin/bash' > /usr/local/bin/init-grafana.sh && \
+    echo 'mkdir -p /var/lib/grafana/dashboards' >> /usr/local/bin/init-grafana.sh && \
+    echo 'echo "Directory created: $(ls -la /var/lib/grafana)"' >> /usr/local/bin/init-grafana.sh && \
+    echo 'cp -f /tmp/dashboards/*.json /var/lib/grafana/dashboards/ 2>/dev/null || true' >> /usr/local/bin/init-grafana.sh && \
+    echo 'echo "Files copied: $(ls -la /var/lib/grafana/dashboards)"' >> /usr/local/bin/init-grafana.sh && \
+    echo 'chown -R 472:472 /var/lib/grafana' >> /usr/local/bin/init-grafana.sh && \
+    echo 'chmod -R 755 /var/lib/grafana/dashboards' >> /usr/local/bin/init-grafana.sh && \
+    echo 'exec /run.sh "$@"' >> /usr/local/bin/init-grafana.sh && \
+    chmod +x /usr/local/bin/init-grafana.sh
+
+# Create temp directory and copy dashboard
+RUN mkdir -p /tmp/dashboards
+
+# Copy dashboard files to temp location
+COPY grafana/dashboards/service.json /tmp/dashboards/
+
+# Set the entrypoint to our script
+ENTRYPOINT ["/usr/local/bin/init-grafana.sh"]

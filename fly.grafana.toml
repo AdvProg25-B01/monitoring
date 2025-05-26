@@ -1,0 +1,26 @@
+app = "b01-grafana"
+primary_region = "dfw"
+
+[build]
+  dockerfile = "Dockerfile.grafana"
+
+[env]
+  GF_SECURITY_ADMIN_PASSWORD = "admin"
+  GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH = "/var/lib/grafana/dashboards/service.json"
+  GF_PATHS_PROVISIONING = "/etc/grafana/provisioning"
+
+[mounts]
+  source = "grafana_storage"
+  destination = "/var/lib/grafana"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
