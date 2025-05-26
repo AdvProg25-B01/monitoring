@@ -1,0 +1,40 @@
+scrape_configs:
+  - job_name: "prometheus" # Monitor Prometheus sendiri
+    static_configs:
+      - targets: ["localhost:9090"]
+      
+  - job_name: 'supplier-service-koyeb'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    scheme: 'https'
+    static_configs:
+      - targets: ['adverse-anetta-b01-84d81d85.koyeb.app']
+        labels:
+          application: 'supplier-service'
+          namespace: 'koyeb'
+    tls_config:
+      insecure_skip_verify: true
+
+  - job_name: 'product-service-aws'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    scheme: 'http'
+    static_configs:
+      - targets: ['52.3.54.192']
+        labels:
+          application: 'product-service'
+          namespace: 'ec2'
+    tls_config:
+      insecure_skip_verify: true
+
+  - job_name: 'pelanggan-service-koyeb'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    scheme: 'http'
+    static_configs:
+      - targets: ['standard-kirby-manajemen-pelanggan-08f7f84c.koyeb.app']
+        labels:
+          application: 'pelanggan-service'
+          namespace: 'koyeb'
+    tls_config:
+      insecure_skip_verify: true
