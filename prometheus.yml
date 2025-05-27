@@ -19,16 +19,18 @@ scrape_configs:
     tls_config:
       insecure_skip_verify: true
 
-  - job_name: 'product-service-aws'
+  - job_name: 'product-service-koyeb'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
-    scheme: 'http'
+    scheme: 'https'  # Changed to HTTPS since it's on Koyeb
     static_configs:
-      - targets: ['52.3.54.192']
+      - targets: ['invisible-shay-sopigoo-b06fd14f.koyeb.app']
         labels:
-          application: 'product-service'
-          namespace: 'ec2'
-
+          application: 'product-service-koyeb'
+          namespace: 'amazon'
+    tls_config:
+      insecure_skip_verify: true
+      
   - job_name: 'pelanggan-service-koyeb'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
